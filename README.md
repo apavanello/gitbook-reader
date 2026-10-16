@@ -32,6 +32,26 @@ recebem um índice gerado da árvore de `.md`.
 
 Código em `src/` (`lib/` = funções puras testáveis, `components/` = UI), testes em `tests/`, fixtures reais do `apavanello/curso-opa-eks` em `fixtures/`. A especificação completa vive em [`SPEC.md`](./SPEC.md); o plano de implementação em [`tasks/plan.md`](./tasks/plan.md).
 
+## Deploy
+
+### GitHub Pages (automático via script)
+
+O app é 100% estático com hash routing — funciona no Pages sem regras de rewrite.
+
+```bash
+./scripts/deploy-gh-pages.sh   # build + push do dist/ para o branch gh-pages
+```
+
+Fonte do Pages: branch `gh-pages`, diretório `/`. Se quiser deploy por Actions a cada push, adicione um workflow `.github/workflows/deploy.yml` pela UI do GitHub (exige token com escopo `workflow`).
+
+### Servidor próprio (Docker)
+
+```bash
+docker compose up -d --build   # sobe em http://seu-servidor:8080
+```
+
+Troque a porta no `docker-compose.yml` se necessário. A imagem é multi-stage: build com Node 22 e serve com nginx.
+
 ## Limitações (v2)
 
 Repos privados (PAT), subpath de monorepo (`?subpath=/docs`) e PWA/offline completo ficaram para a v2 — ver Open Questions da spec.
