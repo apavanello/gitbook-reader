@@ -32,6 +32,17 @@ recebem um índice gerado da árvore de `.md`.
 
 Código em `src/` (`lib/` = funções puras testáveis, `components/` = UI), testes em `tests/`, fixtures reais do `apavanello/curso-opa-eks` em `fixtures/`. A especificação completa vive em [`SPEC.md`](./SPEC.md); o plano de implementação em [`tasks/plan.md`](./tasks/plan.md).
 
+## Links diretos (compartilháveis)
+
+Qualquer um destes formatos abre o livro direto (no Pages o formato sem `#` passa por um redirect automático via `404.html`; no Docker o nginx entrega o app direto):
+
+```
+https://apavanello.github.io/gitbook-reader/github.com/owner/repo
+https://apavanello.github.io/gitbook-reader/owner/repo@branch
+https://apavanello.github.io/gitbook-reader/owner/repo@branch/capitulos/cap-01.md
+https://apavanello.github.io/gitbook-reader/#/owner/repo@branch/capitulos/cap-01.md#âncora
+```
+
 ## Deploy
 
 ### GitHub Pages (automático via script)

@@ -51,6 +51,36 @@ export function navigate(route: Route): void {
   window.location.hash = buildHash(route);
 }
 
+const ASSET_RE = /\.(js|css|map|png|jpe?g|gif|svg|webp|ico|txt|xml|json|woff2?)$/i;
+
+/**
+ * Converte um "path bonito" em rota:
+ * `/github.com/owner/repo@branch/cap.md` ou `/owner/repo@branch/cap.md` → Route.
+ * Retorna null para caminhos que não parecem owner/repo (assets, raiz, index.html).
+ */
+export function parsePrettyPath(pathname: string, base = "/"): Route | null {
+  let rest = pathname;
+  const baseNorm = base.replace(/\/+$/, "");
+  if (baseNorm && rest.startsWith(baseNorm)) rest = rest.slice(baseNorm.length);
+  rest = rest.replace(/^\/+|\/+$/g, "").replace(/(^|\/)index\.html$/i, "");
+  const gh = rest.match(/^github\.com\/(.+)$/i);
+  if (gh) rest = gh[1];
+  if (!rest || !rest.includes("/") || ASSET_RE.test(rest)) return null;
+  return parseHash(`#/${rest}`);
+}
+
+/**
+ * No boot: se a URL é um path bonito (ex.: servido com try_files no nginx),
+ * converte para a rota hash equivalente sem recarregar a página.
+ */
+export function normalizePrettyUrl(): void {
+  if (parseHash(window.location.hash)) return;
+  const route = parsePrettyPath(window.location.pathname, "/");
+  if (route) {
+    history.replaceState(null, "", `/${buildHash(route)}`);
+  }
+}
+
 export function sameBook(a: Route | null, b: Route | null): boolean {
   return a !== null && b !== null && a.owner === b.owner && a.repo === b.repo && a.branch === b.branch;
 }

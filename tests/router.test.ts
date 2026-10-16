@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildHash, parseHash, sameBook } from "../src/lib/router";
+import { buildHash, parseHash, parsePrettyPath, sameBook } from "../src/lib/router";
 
 describe("parseHash/buildHash", () => {
   it("round-trip básico com path e âncora", () => {
@@ -29,6 +29,47 @@ describe("parseHash/buildHash", () => {
 
   it("decodifica path com espaço", () => {
     expect(parseHash("#/o/r/cap%20itulo.md")).toMatchObject({ path: "cap itulo.md" });
+  });
+});
+
+describe("parsePrettyPath — links diretos sem hash", () => {
+  it("aceita formato com github.com", () => {
+    expect(parsePrettyPath("/github.com/owner/repo")).toEqual({
+      owner: "owner",
+      repo: "repo",
+      branch: null,
+      path: "",
+      hash: "",
+    });
+  });
+
+  it("aceita owner/repo direto, com branch e path", () => {
+    expect(parsePrettyPath("/owner/repo@main/capitulos/cap.md")).toEqual({
+      owner: "owner",
+      repo: "repo",
+      branch: "main",
+      path: "capitulos/cap.md",
+      hash: "",
+    });
+  });
+
+  it("respeita base customizada (ex.: /gitbook-reader)", () => {
+    expect(parsePrettyPath("/gitbook-reader/owner/repo", "/gitbook-reader/")).toMatchObject({
+      owner: "owner",
+      repo: "repo",
+    });
+    expect(parsePrettyPath("/gitbook-reader/github.com/owner/repo", "/gitbook-reader/")).toMatchObject({
+      owner: "owner",
+      repo: "repo",
+    });
+  });
+
+  it("ignora raiz, index.html e assets", () => {
+    expect(parsePrettyPath("/")).toBeNull();
+    expect(parsePrettyPath("/index.html")).toBeNull();
+    expect(parsePrettyPath("/assets/index-abc123.js")).toBeNull();
+    expect(parsePrettyPath("/logo.png")).toBeNull();
+    expect(parsePrettyPath("/so-owner")).toBeNull();
   });
 });
 
