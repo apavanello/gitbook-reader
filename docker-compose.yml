@@ -1,0 +1,8 @@
+services:
+  gitbook-reader:
+    build: .
+    image: gitbook-reader
+    container_name: gitbook-reader
+    ports:
+      - "8080:80" # troque a porta da esquerda conforme seu servidor
+    restart: unless-stopped
