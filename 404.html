@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>GitBook Reader</title>
+    <script>
+      (function () {
+        var base = "/gitbook-reader/";
+        var p = location.pathname;
+        var rest = p.indexOf(base) === 0 ? p.slice(base.length) : p.replace(/^\/+/, "");
+        rest = rest.replace(/^\/+|\/+$/g, "");
+        var m = rest.match(/^github\.com\/(.+)$/i);
+        if (m) rest = m[1];
+        if (!rest || rest.indexOf("/") === -1 ||
+            /\.(js|css|map|png|jpe?g|gif|svg|webp|ico|txt|xml|json|woff2?)$/i.test(rest)) {
+          location.replace(base);
+          return;
+        }
+        location.replace(base + "#/" + rest + location.hash);
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>
